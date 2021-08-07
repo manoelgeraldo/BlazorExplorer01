@@ -1,0 +1,32 @@
+﻿<div style="background-color:coral">
+    
+    <h4>Componente Filho</h4>
+
+    <EditForm Model="@novoTable01" OnValidSubmit="OnValidSubmit">
+
+        <div class="form-group">
+            <label for="table01">Table01</label>
+            <InputText id="table01" class="form-control" placeholder="Insirar aqui os dados para table01" @bind-Value="@novoTable01.CampoTable01" />
+        </div>
+
+        <div class="form-group">
+            <label for="table02">Table02</label>
+            <InputText id="table02" class="form-control" placeholder="Insirar aqui os dados para table02" @bind-Value="@novoTable01.Table02.CampoTable02" />
+        </div>
+
+        <button type="submit" class="btn btn-success">Salvar</button>
+
+    </EditForm>
+</div>
+
+
+@code{
+
+    //Parâmetros do ComponentePai
+
+    [Parameter]
+    public Table01 novoTable01 { get; set; }
+
+    [Parameter]
+    public EventCallback OnValidSubmit { get; set; }
+}

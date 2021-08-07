@@ -1,0 +1,67 @@
+﻿@page "/carregando-e-salvando-dados-em-duas-tables"
+
+@inject ITable01Service table01Service
+
+<div style="background-color:cornflowerblue">
+    <h1>Carregando e Salvando Dados em Duas Tabelas Diferentes</h1>
+
+    <p>Demonstração utilizando Service e Repository.</p>
+    <br />
+    <h2>Componente Pai</h2>
+    <hr />
+    <NovoTable01 novoTable01="_novoTable01" OnValidSubmit="OnValidSubmit" />
+    <br />
+    <hr />
+    @if (table01s == null)
+    {
+        <p><em>Loading...</em></p>
+    }
+    else
+    {
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Id</th>
+                    <th>Table01</th>
+                    <th>Table02</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var campo in table01s)
+                {
+                    <tr>
+                        <td>@campo.Id</td>
+                        <td>@campo.CampoTable01</td>
+                        <td>@campo.Table02.CampoTable02</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+</div>
+
+
+@code {
+
+    //Componente Pai
+
+    private List<Table01> table01s;
+
+    protected override async Task OnInitializedAsync()
+    {
+        table01s = await table01Service.GetAll();
+        StateHasChanged();
+    }
+
+    //Componente Filho
+
+    public Table01 _novoTable01 = new()
+    {
+        Table02 = new Table02()
+    };
+
+    private async Task OnValidSubmit()
+    {
+        await table01Service.AddTable01(_novoTable01);
+    }
+}
