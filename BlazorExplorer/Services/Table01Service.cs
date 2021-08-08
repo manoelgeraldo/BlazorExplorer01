@@ -21,10 +21,27 @@ namespace BlazorExplorer.Services
             return await table01Repository.GetAll();
         }
 
+        public async Task<Table01> GetById(int id)
+        {
+            var verificaTable01 = await table01Repository.GetById(id);
+            return verificaTable01;
+        }
+
         public async Task<Table01> AddTable01(Table01 table01)
         {
             var novoTable01 = await table01Repository.AddTable01(table01);
             return novoTable01;
+        }
+
+        public async Task<Table01> DeleteTable01(int id)
+        {
+            var verificaTable01 = await table01Repository.GetById(id);
+            
+            if (verificaTable01 != null)
+            {
+                await table01Repository.DeleteTable01(id);
+            }
+            return verificaTable01;
         }
     }
 }

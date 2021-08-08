@@ -1,15 +1,15 @@
-﻿@page "/carregando-e-salvando-dados-em-duas-tables"
+﻿@page "/carregando-e-salvando-dados-em-duas-tabelas"
 
 @inject ITable01Service table01Service
 
-<div style="background-color:cornflowerblue">
-    <h1>Carregando e Salvando Dados em Duas Tabelas Diferentes</h1>
+<div>
+    <h1>CRUD em Duas Tabelas Diferentes</h1>
 
     <p>Demonstração utilizando Service e Repository.</p>
     <br />
     <h2>Componente Pai</h2>
     <hr />
-    <NovoTable01 novoTable01="_novoTable01" OnValidSubmit="OnValidSubmit" />
+    <ComponenteFilho novoTable01="_novoTable01" OnValidSubmit="OnValidSubmit" />
     <br />
     <hr />
     @if (table01s == null)
@@ -24,6 +24,7 @@
                     <th>Id</th>
                     <th>Table01</th>
                     <th>Table02</th>
+                    <th>Ações</th>
                 </tr>
             </thead>
             <tbody>
@@ -33,6 +34,10 @@
                         <td>@campo.Id</td>
                         <td>@campo.CampoTable01</td>
                         <td>@campo.Table02.CampoTable02</td>
+                        <td>
+                            <button @onclick="@(()=>Edit(campo.Id))" class="btn btn-primary">Editar</button>
+                            <button @onclick="@(()=>Delete(campo.Id))" class="btn btn-danger">Deletar</button>
+                        </td>
                     </tr>
                 }
             </tbody>
@@ -43,17 +48,33 @@
 
 @code {
 
-    //Componente Pai
+    //COMPONENTE PAI
 
-    private List<Table01> table01s;
+    private List<Table01> table01s = new List<Table01>();
 
     protected override async Task OnInitializedAsync()
     {
-        table01s = await table01Service.GetAll();
-        StateHasChanged();
+        await GetTable01();
     }
 
-    //Componente Filho
+    private async Task<List<Table01>> GetTable01()
+    {
+        table01s = await table01Service.GetAll();
+        return table01s;
+    }
+
+    private void Edit(int id)
+    {
+        _novoTable01 = table01s.SingleOrDefault(t => t.Id == id);
+    }
+
+    private async void Delete(int id)
+    {
+        await table01Service.DeleteTable01(id);
+        await GetTable01();
+    }
+
+    //COMPONENTE FILHO
 
     public Table01 _novoTable01 = new()
     {
@@ -63,5 +84,7 @@
     private async Task OnValidSubmit()
     {
         await table01Service.AddTable01(_novoTable01);
+        _novoTable01 = new Table01(){ Table02 = new Table02()};
+        await GetTable01();
     }
 }
