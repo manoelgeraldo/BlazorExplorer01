@@ -35,12 +35,7 @@ namespace BlazorExplorer.Services
 
         public async Task<Table01> DeleteTable01(int id)
         {
-            var verificaTable01 = await table01Repository.GetById(id);
-            
-            if (verificaTable01 != null)
-            {
-                await table01Repository.DeleteTable01(id);
-            }
+            var verificaTable01 = await table01Repository.DeleteTable01(id);
             return verificaTable01;
         }
     }

@@ -19,8 +19,7 @@ namespace BlazorExplorer.Repositories
 
         public async Task<List<Table01>> GetAll()
         {
-            return await context.Table01s.AsNoTracking()
-                                         .Include(t => t.Table02)
+            return await context.Table01s.Include(t => t.Table02)
                                          .ToListAsync();
         }
 
@@ -32,13 +31,11 @@ namespace BlazorExplorer.Repositories
 
         public async Task<Table01> AddTable01(Table01 table01)
         {
-            if(table01.Id == 0)
-            {
-                await context.Table01s.AddAsync(table01);
-            }
-            context.Table01s.Update(table01);
+            if(table01.Id == 0) await context.Table01s.AddAsync(table01);
+            else context.Table01s.Update(table01);
             
             await context.SaveChangesAsync();
+            
             return table01;
         }
 
@@ -46,12 +43,14 @@ namespace BlazorExplorer.Repositories
         {
             var verificaTable01 = await context.Table01s.SingleOrDefaultAsync(t => t.Id == Id);
 
-            if(verificaTable01 != null)
-            {
-                context.Table01s.Remove(verificaTable01);
-                await context.SaveChangesAsync();
-            }
-            return verificaTable01;
+            if (verificaTable01 is null) return null;
+            
+            var table01Removido = context.Table01s.Remove(verificaTable01);
+            
+            await context.SaveChangesAsync();
+            
+            return table01Removido.Entity;
+
         }
     }
 }
